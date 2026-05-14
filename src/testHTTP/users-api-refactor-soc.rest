@@ -1,0 +1,54 @@
+
+### Read all users 
+GET http://localhost:3002/api/users
+
+### Create a new uer
+POST http://localhost:3002/api/users
+Content-Type:  application/json
+
+{
+    "username": "Charlie",
+    "email": "charliebrfbo@something.com",
+    "password":"pass1234"
+
+}
+
+### Create user - David
+POST http://localhost:3002/api/users
+Content-Type: application/json
+
+{
+    "username": "David",
+    "email": "david@example.com",
+    "password": "pass5678"
+}
+
+### Create user - Emma
+POST http://localhost:3002/users
+Content-Type: application/json
+
+{
+    "username": "Emma",
+    "email": "emma@example.com",
+    "password": "pass9012"
+}
+
+### Uppdate a user
+PUT http://localhost:3002/api/users/1
+Content-Type:  application/json
+
+{
+    "username": "cloudyggg",
+    "email": "justcloudy@something.com",
+    "password":"sleepy1234"
+
+}
+
+### Delete user by id (ลบ user id 1)
+DELETE http://localhost:3002/api/users/1
+
+### Delete user by id (ลบ user id 3)
+DELETE http://localhost:3002/api/users/3
+
+### Delete user - Not Found (ทดสอบลบ user ที่ไม่มี)
+DELETE http://localhost:3002/api/users/999
