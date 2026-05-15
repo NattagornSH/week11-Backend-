@@ -1,9 +1,9 @@
 
 ### Read all users 
-GET http://localhost:3002/api/users
+GET http://localhost:3002/api/V1/users
 
 ### Create a new uer
-POST http://localhost:3002/api/users
+POST http://localhost:3002/api/V1/users
 Content-Type:  application/json
 
 {
@@ -14,7 +14,7 @@ Content-Type:  application/json
 }
 
 ### Create user - David
-POST http://localhost:3002/api/users
+POST http://localhost:3002/api/V1/users
 Content-Type: application/json
 
 {
@@ -24,7 +24,7 @@ Content-Type: application/json
 }
 
 ### Create user - Emma
-POST http://localhost:3002/users
+POST http://localhost:3002/V1/users
 Content-Type: application/json
 
 {
@@ -34,7 +34,7 @@ Content-Type: application/json
 }
 
 ### Uppdate a user
-PUT http://localhost:3002/api/users/1
+PUT http://localhost:3002/api/V1/users/1
 Content-Type:  application/json
 
 {
@@ -45,10 +45,10 @@ Content-Type:  application/json
 }
 
 ### Delete user by id (ลบ user id 1)
-DELETE http://localhost:3002/api/users/1
+DELETE http://localhost:3002/api/V1/users/1
 
 ### Delete user by id (ลบ user id 3)
-DELETE http://localhost:3002/api/users/3
+DELETE http://localhost:3002/api/V1/users/3
 
 ### Delete user - Not Found (ทดสอบลบ user ที่ไม่มี)
-DELETE http://localhost:3002/api/users/999
+DELETE http://localhost:3002/api/V1/users/999
