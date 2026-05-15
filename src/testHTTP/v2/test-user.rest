@@ -24,7 +24,7 @@ Content-Type: application/json
 }
 
 ### Create user - Emma
-POST http://localhost:3002/V2/users
+POST http://localhost:3002/api/V2/users
 Content-Type: application/json
 
 {
