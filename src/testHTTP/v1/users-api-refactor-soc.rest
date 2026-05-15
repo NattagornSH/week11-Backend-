@@ -4,7 +4,7 @@ GET http://localhost:3002/api/V1/users
 
 ### Create a new uer
 POST http://localhost:3002/api/V1/users
-Content-Type:  application/json
+Content-Type:  application/jsonclear
 
 {
     "username": "Charlie",
