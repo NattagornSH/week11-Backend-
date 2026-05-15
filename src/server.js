@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import { users } from "./mockData/fakeUsers.js";
 import { router as apiRoutes } from "./routes/index.js";
+import { connectDB } from "./config/mongodb.js";
 const app = express();
 
 app.use(cors());
@@ -117,6 +118,8 @@ app.delete("/users/:id", (req, res) => {
 });
 
 const PORT = 3002;
+
+await connectDB();
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT} 🟢`);

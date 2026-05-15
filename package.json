@@ -7,7 +7,7 @@
   "type": "module",
   "main": "server.js",
   "scripts": {
-    "dev": "node --watch src/server.js",
+    "dev": "node --watch --env-file=.env src/server.js",
     "format": "prettier --write \"src/**/*.js\""
   },
   "dependencies": {
