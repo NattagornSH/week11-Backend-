@@ -5,10 +5,10 @@ export async function connectDB() {
 
   try {
     await mongoose.connect(uri, { dbName: "jsd12-express-app" });
-    console.log("MongoDB connected 🟢");
+    console.log("MongoDB connected ✅");
   } catch (err) {
     console.error("MongoDB connection error ❌", err);
-    //process.exit(1);
+    // process.exit(1);
     throw err;
   }
 }

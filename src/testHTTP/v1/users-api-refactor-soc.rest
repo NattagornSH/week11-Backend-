@@ -1,54 +1,25 @@
+### Read all users
+GET http://localhost:3002/api/v1/users
 
-### Read all users 
-GET http://localhost:3002/api/V1/users
-
-### Create a new uer
-POST http://localhost:3002/api/V1/users
-Content-Type:  application/jsonclear
-
-{
-    "username": "Charlie",
-    "email": "charliebrfbo@something.com",
-    "password":"pass1234"
-
-}
-
-### Create user - David
-POST http://localhost:3002/api/V1/users
+### Create a new user
+POST http://localhost:3002/api/v1/users
 Content-Type: application/json
 
 {
-    "username": "David",
-    "email": "david@example.com",
-    "password": "pass5678"
+    "username": "Charlie", 
+    "email": "charlie@example.com",
+    "password": "pass123"
 }
 
-### Create user - Emma
-POST http://localhost:3002/V1/users
+### Update a user
+PUT http://localhost:3002/api/v1/users/1
 Content-Type: application/json
 
 {
-    "username": "Emma",
-    "email": "emma@example.com",
-    "password": "pass9012"
+    "username": "Neeti3", 
+    "email": "neeti@example.com",
+    "password": "pass123"
 }
 
-### Uppdate a user
-PUT http://localhost:3002/api/V1/users/1
-Content-Type:  application/json
-
-{
-    "username": "cloudyggg",
-    "email": "justcloudy@something.com",
-    "password":"sleepy1234"
-
-}
-
-### Delete user by id (ลบ user id 1)
-DELETE http://localhost:3002/api/V1/users/1
-
-### Delete user by id (ลบ user id 3)
-DELETE http://localhost:3002/api/V1/users/3
-
-### Delete user - Not Found (ทดสอบลบ user ที่ไม่มี)
-DELETE http://localhost:3002/api/V1/users/999
+### DELETE a user
+DELETE http://localhost:3002/api/v1/users/1

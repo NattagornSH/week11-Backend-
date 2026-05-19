@@ -1,0 +1,34 @@
+### Read all users
+GET http://localhost:3002/api/v2/users
+
+### Create a new user
+POST http://localhost:3002/api/v2/users
+Content-Type: application/json
+
+{
+    "username": "Charlie", 
+    "role": "admin",
+    "email": "charlie7@example.com",
+    "password": "password123"
+}
+
+### Update a user
+PUT http://localhost:3002/api/v2/users/6a06ad3401facfee7966fc0f
+Content-Type: application/json
+
+{
+    "username": "Neeti3", 
+    "email": "charlie@example.com",
+    "password": "password123"
+}
+
+### Update a user - trigger catch (invalid ObjectId causes CastError)
+PUT http://localhost:3002/api/v2/users/not-a-valid-id
+Content-Type: application/json
+
+{
+    "username": "TriggerError"
+}
+
+### DELETE a user
+DELETE http://localhost:3002/api/v2/users/6a06ad3401facfee7966fc0f

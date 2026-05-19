@@ -1,13 +1,18 @@
 import express from "express";
 import cors from "cors";
-import { users } from "./mockData/fakeUsers.js";
+
+import { users } from "./fakeData/fakeUsers.js";
 import { router as apiRoutes } from "./routes/index.js";
 import { connectDB } from "./config/mongodb.js";
 import { connectSupabase } from "./config/supabase.js";
+
 const app = express();
 
 app.use(cors());
+
 app.use(express.json());
+
+app.use("/api", apiRoutes);
 
 app.get("/", (req, res) => {
   res.send(`<!doctype html>
@@ -42,79 +47,16 @@ app.get("/", (req, res) => {
   </html>`);
 });
 
-app.use("/api", apiRoutes);
-
-// app.get("/users", (req, res) => {
-//   res.json(users);
-// });
-
-// สร้าง POST endpoint สำหรับเพิ่ม user ใหม่
-app.post("/users", (req, res) => {
-  // ดึง username และ email จาก request body (ถ้าไม่มีให้ใช้ object ว่าง)
-  const { username, email } = req.body || {};
-
-  // ตรวจสอบว่ามี username และ email หรือไม่
-  if (!username || !email) {
-    // ถ้าไม่มี ส่ง error 400 (Bad Request) กลับไป
-    return res.status(400).json({ error: "username and email are required" });
-  }
-
-  // หา ID ถัดไปโดยการหา ID ที่ใหญ่ที่สุดใน users array แล้วบวก 1
-  const nextId = String(
-    // ใช้ reduce วนหา ID ที่ใหญ่ที่สุด (เริ่มจาก 0) แล้วบวก 1
-    (users.reduce((max, u) => Math.max(max, Number(u.id)), 0) || 0) + 1
-  );
-
-  // สร้าง user object ใหม่ด้วย id, username, email
-  const newUser = { id: nextId, username, email };
-
-  // เพิ่ม user ใหม่เข้าไปใน users array
-  users.push(newUser);
-
-  // ส่ง response 201 (Created) พร้อมข้อมูล user ที่สร้างใหม่
-  return res.status(201).json(newUser);
-});
-
-// PUT เปลี่ยนแปลงข้อมูล
-app.put("/users/:id", (req, res) => {
-  const user = users.find((u) => u.id === req.params.id);
-
-  if (!user) {
-    return res.status(404).json({ error: "User not found!" });
-  }
-  const { username, email, password } = req.body;
-
-  if (!username || !email || !password) {
-    return res
-      .status(400)
-      .json({ error: "username, email and password are required" });
-  }
-
-  user.username = username;
-  user.email = email;
-  user.password = password;
-
-  res.status(200).json(user);
-});
-
-// สร้าง DELETE endpoint สำหรับลบ user ตาม id
-app.delete("/users/:id", (req, res) => {
-  // หา index ของ user ที่ต้องการลบใน users array
-  const userIndex = users.findIndex((u) => u.id === req.params.id);
-
-  // ถ้าไม่เจอ user (index = -1)
-  if (userIndex === -1) {
-    // ส่ง error 404 (Not Found) กลับไป
-    return res.status(404).json({ error: "User not found!" });
-  }
-
-  // ลบ user ออกจาก array โดยใช้ splice (ลบ 1 ตัว ที่ตำแหน่ง userIndex)
-  const deletedUser = users.splice(userIndex, 1)[0];
-
-  // ส่ง response 200 (OK) พร้อมข้อมูล user ที่ถูกลบ
-  return res.status(200).json({
-    message: "User deleted successfully",
-    user: deletedUser,
+// Centralized error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(err.status || 500).json({
+    success: false,
+    message: err.message || "Internal Server Error!",
+    path: req.originalUrl,
+    method: req.method,
+    timestamp: new Date().toISOString(),
+    stack: err.stack,
   });
 });
 
@@ -124,5 +66,5 @@ await connectDB();
 await connectSupabase();
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT} 🟢`);
+  console.log(`Server running on PORT: ${PORT} 🟢`);
 });
