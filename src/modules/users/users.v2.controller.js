@@ -1,4 +1,5 @@
 import { User } from "./user.model.js";
+import bcrypt from "bcrypt";
 
 const userResponse = (doc) => {
   const user = doc.toObject();
@@ -81,6 +82,36 @@ export const deleteUser = async (req, res, next) => {
     return res.status(200).json({ success: true, data: doc });
   } catch (err) {
     // return res.status(400).json({ success: false, error: err });
+    next(err);
+  }
+};
+
+export const createUsersHash = async (req, res) => {
+  const { password, email, username, role } = req.body || {};
+  if (!email || !password) {
+    console.error(`email and password required : ${err}`);
+    next(err);
+  }
+  async function hashedPassword(password) {
+    const hash = await bcrypt.hash(password, 12);
+    return hash;
+  }
+  try {
+    const user = await User.findOne({ email });
+    if (user) {
+      return res
+        .status(400)
+        .json({ message: "email already use.", success: false });
+    }
+    const newPassword = await bcrypt.hash(password, 12);
+    const doc = await User.create({
+      email,
+      username,
+      password: newPassword,
+      role,
+    });
+    res.status(201).json({ success: true, data: doc });
+  } catch (err) {
     next(err);
   }
 };

@@ -1,7 +1,7 @@
 ### Read all users
 GET http://localhost:3002/api/v2/users
 
-### Create a new user
+### Create a new user (No Hash)
 POST http://localhost:3002/api/v2/users
 Content-Type: application/json
 
@@ -10,6 +10,17 @@ Content-Type: application/json
     "role": "admin",
     "email": "charlie7@example.com",
     "password": "password123"
+}
+
+### Create a new user with bcrypt hash ✅
+POST http://localhost:3002/api/v2/users/hash
+Content-Type: application/json
+
+{
+    "username": "SecureUser", 
+    "role": "user",
+    "email": "secure@example.com",
+    "password": "mySecurePassword123"
 }
 
 ### Update a user
