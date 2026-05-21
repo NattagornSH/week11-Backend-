@@ -86,16 +86,15 @@ export const deleteUser = async (req, res, next) => {
   }
 };
 
-export const createUsersHash = async (req, res) => {
+export const createUsersHash = async (req, res, next) => {
   const { password, email, username, role } = req.body || {};
   if (!email || !password) {
-    console.error(`email and password required : ${err}`);
-    next(err);
+    return res.status(400).json({
+      success: false,
+      error: "email and password are required",
+    });
   }
-  async function hashedPassword(password) {
-    const hash = await bcrypt.hash(password, 12);
-    return hash;
-  }
+
   try {
     const user = await User.findOne({ email });
     if (user) {
@@ -110,7 +109,60 @@ export const createUsersHash = async (req, res) => {
       password: newPassword,
       role,
     });
-    res.status(201).json({ success: true, data: doc });
+    res.status(201).json({ success: true, data: userResponse(doc) });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const loginUser = async (req, res, next) => {
+  const { email, password } = req.body || {};
+
+  // Validation
+  if (!email || !password) {
+    return res.status(400).json({
+      success: false,
+      error: "email and password are required",
+    });
+  }
+
+  try {
+    // 🔍 หา user ในฐานข้อมูล (ต้อง select password ด้วย)
+    const userInDB = await User.findOne({ email }).select("+password");
+
+    // ถ้าไม่เจอ user
+    if (!userInDB) {
+      return res.status(401).json({
+        success: false,
+        error: "อีเมลหรือรหัสผ่านไม่ถูกต้อง",
+      });
+    }
+
+    // ตรวจสอบว่ามี password field หรือไม่
+    if (!userInDB.password) {
+      return res.status(500).json({
+        success: false,
+        error: "User password not found in database",
+      });
+    }
+
+    // 🔐 เปรียบเทียบ password ด้วย bcrypt
+    const isMatch = await bcrypt.compare(password, userInDB.password);
+
+    // ถ้า password ไม่ตรง
+    if (isMatch === false) {
+      return res.status(401).json({
+        success: false,
+        error: "อีเมลหรือรหัสผ่านไม่ถูกต้อง",
+      });
+    }
+
+    // ✅ Login สำเร็จ
+    return res.status(200).json({
+      success: true,
+      message: "เข้าสู่ระบบสำเร็จ!",
+      data: userResponse(userInDB),
+    });
   } catch (err) {
     next(err);
   }

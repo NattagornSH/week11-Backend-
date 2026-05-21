@@ -7,6 +7,7 @@ import {
   updateUser,
   deleteUser,
   createUsersHash,
+  loginUser,
 } from "../../modules/users/users.v2.controller.js";
 
 export const router = Router();
@@ -17,13 +18,13 @@ router.get("/", getUsers);
 
 router.post("/", createUser);
 
-router.post("/hash", createUsersHash); // ✅ Route with bcrypt hash
+router.post("/hash", createUsersHash); // ✅ Register with bcrypt hash
+
+router.post("/login", loginUser); // ✅ Login route
 
 router.put("/:id", updateUser);
 
 router.delete("/:id", deleteUser);
-
-router.post("/hash", createUsersHash);
 
 // Supabase / PostgreSQL routes (/api/v2/users/pg)
 // Password is excluded from SELECT.

@@ -23,6 +23,33 @@ Content-Type: application/json
     "password": "mySecurePassword123"
 }
 
+### Login - Success ✅
+POST http://localhost:3002/api/v2/users/login
+Content-Type: application/json
+
+{
+    "email": "secure@example.com",
+    "password": "mySecurePassword123"
+}
+
+### Login - Wrong Password ❌
+POST http://localhost:3002/api/v2/users/login
+Content-Type: application/json
+
+{
+    "email": "secure@example.com",
+    "password": "wrongPassword"
+}
+
+### Login - User Not Found ❌
+POST http://localhost:3002/api/v2/users/login
+Content-Type: application/json
+
+{
+    "email": "notexist@example.com",
+    "password": "anyPassword"
+}
+
 ### Update a user
 PUT http://localhost:3002/api/v2/users/6a06ad3401facfee7966fc0f
 Content-Type: application/json
