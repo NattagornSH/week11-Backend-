@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 import { users } from "./fakeData/fakeUsers.js";
 import { router as apiRoutes } from "./routes/index.js";
@@ -11,6 +12,7 @@ const app = express();
 app.use(cors());
 
 app.use(express.json());
+app.use(cookieParser()); // ✅ Enable cookie parsing
 
 app.use("/api", apiRoutes);
 

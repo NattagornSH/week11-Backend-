@@ -1,0 +1,50 @@
+### ========================================================================
+### Setup Test Users for Authentication
+### ========================================================================
+### Run these in order to create fresh test users with properly hashed passwords
+
+@baseUrl = http://localhost:3002/api/v2/users
+
+
+### ——— STEP 1: Check existing users ————————————————————————————————————
+GET {{baseUrl}}
+
+
+### ——— STEP 2: Delete old test users (if needed) ———————————————————————
+### Replace with actual MongoDB _id from STEP 1
+DELETE {{baseUrl}}/6a06cc4a416f03d890cbcf67
+
+
+### ——— STEP 3: Create test user - Charlie ——————————————————————————————
+POST {{baseUrl}}/hash
+Content-Type: application/json
+
+{
+    "username": "Charlie",
+    "email": "charlie@example.com",
+    "password": "password123",
+    "role": "user"
+}
+
+
+### ——— STEP 4: Create test user - Admin ————————————————————————————————
+POST {{baseUrl}}/hash
+Content-Type: application/json
+
+{
+    "username": "Admin User",
+    "email": "admin@example.com",
+    "password": "admin123",
+    "role": "admin"
+}
+
+
+### ——— STEP 5: Verify users were created ———————————————————————————————
+GET {{baseUrl}}
+
+
+### ========================================================================
+### Now you can test login with:
+### - charlie@example.com / password123
+### - admin@example.com / admin123
+### ========================================================================

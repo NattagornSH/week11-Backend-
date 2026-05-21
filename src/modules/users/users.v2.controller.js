@@ -88,10 +88,10 @@ export const deleteUser = async (req, res, next) => {
 
 export const createUsersHash = async (req, res, next) => {
   const { password, email, username, role } = req.body || {};
-  if (!email || !password) {
+  if (!email || !password || !username) {
     return res.status(400).json({
       success: false,
-      error: "email and password are required",
+      error: "email, username and password are required",
     });
   }
 
@@ -100,15 +100,17 @@ export const createUsersHash = async (req, res, next) => {
     if (user) {
       return res
         .status(400)
-        .json({ message: "email already use.", success: false });
+        .json({ message: "Email already in use.", success: false });
     }
-    const newPassword = await bcrypt.hash(password, 12);
+
+    // ไม่ต้อง hash ที่นี่ เพราะ model จะ hash ให้อัตโนมัติ
     const doc = await User.create({
       email,
       username,
-      password: newPassword,
+      password, // ส่ง plain password ไป model จะ hash ให้
       role,
     });
+
     res.status(201).json({ success: true, data: userResponse(doc) });
   } catch (err) {
     next(err);

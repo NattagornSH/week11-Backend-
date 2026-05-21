@@ -41,22 +41,22 @@ router.post("/login", async (req, res, next) => {
       .json({ success: false, message: "Email and Password required" });
   }
   try {
-    const user = User.findOne({ email }).select("+password");
+    const user = await User.findOne({ email }).select("+password");
     if (!user) {
       return res
-        .status(201)
+        .status(400)
         .json({ success: false, message: "User not found!" });
     }
     const isMatched = await bcrypt.compare(password, user.password);
     if (!isMatched) {
       return res
         .status(400)
-        .json({ success: false, message: "User not found!" });
+        .json({ success: false, message: "Invalid password!" });
     }
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1h", // 1 hours expiration
     });
-    const isProd = precess.env.NODE_ENV === "production";
+    const isProd = process.env.NODE_ENV === "production";
     res.cookie("accessToken", token, {
       httpOnly: true,
       secure: isProd, // only send over HTTPS in production
@@ -70,13 +70,14 @@ router.post("/login", async (req, res, next) => {
       message: "Login successful!",
       user: {
         _id: user._id,
-        username: user.ussername,
+        username: user.username,
         email: user.email,
-        role: user,
-        role,
+        role: user.role,
       },
     });
-  } catch (error) {}
+  } catch (error) {
+    next(error);
+  }
 });
 
 // check user session/token

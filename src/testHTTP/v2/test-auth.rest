@@ -1,0 +1,83 @@
+### ——— Authentication Testing ———————————————————————————————————————————
+### POST /api/v2/users/login    - login and receive HttpOnly cookie
+### GET  /api/v2/users/auth/me  - check session (requires cookie)
+### POST /api/v2/users/auth/logout - clear cookie
+
+# Variables
+@baseUrl = http://localhost:3002/api/v2/users
+
+### ——— UPDATE THESE to match a real user in your MongoDB ———————————————
+@validEmail    = charlie@example.com
+@validPassword = password123
+
+
+### ——— 1. LOGIN - success ——————————————————————————————————————————————
+# Send Request
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "{{validEmail}}",
+  "password": "{{validPassword}}"
+}
+
+
+### ——— 2. LOGIN - missing credentials (expect 400) —————————————————————
+# Send Request
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "{{validEmail}}"
+}
+
+
+### ——— 3. LOGIN - wrong password (expect 400) ——————————————————————————
+# Send Request
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "{{validEmail}}",
+  "password": "wrongpassword"
+}
+
+
+### ——— 4. LOGIN - user not found (expect 400) ——————————————————————————
+# Send Request
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "notexist@example.com",
+  "password": "password123"
+}
+
+
+### ——— 5. CHECK SESSION - success (run AFTER login, cookie auto-sent) ——
+### The REST Client stores the Set-Cookie header from request #1 automatically.
+# Send Request
+GET {{baseUrl}}/auth/me
+
+
+### ——— 6. CHECK SESSION - no token (expect 401) ————————————————————————
+### Send request with an empty/invalid cookie to simulate a missing session.
+# Send Request
+GET {{baseUrl}}/auth/me
+Cookie: accessToken=
+
+
+### ——— 7. CHECK SESSION - expired/invalid token (expect 500 ~ JWT error) 
+# Send Request
+GET {{baseUrl}}/auth/me
+Cookie: accessToken=this.is.not.a.valid.jwt
+
+
+### ——— 8. LOGOUT - success ——————————————————————————————————————————————
+# Send Request
+POST {{baseUrl}}/auth/logout
+
+
+### ——— 9. CHECK SESSION after logout - expect 401 ——————————————————————
+# Send Request
+GET {{baseUrl}}/auth/me

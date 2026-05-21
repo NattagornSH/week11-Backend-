@@ -1,0 +1,48 @@
+# MongoDB — Users API (v2)
+# Base: /api/v2/users
+#
+# Use these endpoints to create users with hashed passwords for authentication testing
+
+### ——— 1. Read all users (MongoDB) ————————————————————————————————————
+GET http://localhost:3002/api/v2/users
+
+
+### ——— 2. Create a new user with HASHED password (MongoDB) ————————————
+### Use this endpoint to create users for login testing
+POST http://localhost:3002/api/v2/users/hash
+Content-Type: application/json
+
+{
+    "username": "Charlie",
+    "email": "charlie@example.com",
+    "password": "password123",
+    "role": "user"
+}
+
+
+### ——— 3. Create another test user ————————————————————————————————————
+POST http://localhost:3002/api/v2/users/hash
+Content-Type: application/json
+
+{
+    "username": "Admin User",
+    "email": "admin@example.com",
+    "password": "admin123",
+    "role": "admin"
+}
+
+
+### ——— 4. Update a user (MongoDB) — replace with real MongoDB _id ————
+PUT http://localhost:3002/api/v2/users/674d9e8f8b5c1a2d3e4f5678
+Content-Type: application/json
+
+{
+    "username": "Charlie Updated",
+    "email": "charlie@example.com",
+    "password": "newpassword123",
+    "role": "admin"
+}
+
+
+### ——— 5. Delete a user (MongoDB) — replace with real MongoDB _id ————
+DELETE http://localhost:3002/api/v2/users/674d9e8f8b5c1a2d3e4f5678
