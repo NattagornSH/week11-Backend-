@@ -13,13 +13,27 @@ const app = express();
 
 app.use(helmet());
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "http://localhost:5175",
+];
+
 const corsOptions = {
-  origin: [
-    "http://localhost:5173",
-    "http://localhost:5174",
-    "http://localhost:5175",
-  ], // frontend domain
-  credentials: true, // allow cookies to be sent
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    const isAllowed = allowedOrigins.includes(origin) || 
+                      (process.env.FRONTEND_URL && origin === process.env.FRONTEND_URL) ||
+                      origin.endsWith(".onrender.com") ||
+                      origin.endsWith(".vercel.app");
+                      
+    if (isAllowed) {
+      callback(null, true);
+    } else {
+      callback(new Error(`Origin ${origin} not allowed by CORS`));
+    }
+  },
+  credentials: true,
 };
 
 app.use(cors(corsOptions));

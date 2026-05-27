@@ -59,7 +59,7 @@ router.post("/login", async (req, res, next) => {
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1h", // 1 hours expiration
     });
-    const isProd = process.env.NODE_ENV === "production";
+    const isProd = process.env.NODE_ENV === "production" || process.env.RENDER === "true";
     res.cookie("accessToken", token, {
       httpOnly: true,
       secure: isProd, // only send over HTTPS in production
@@ -111,7 +111,7 @@ router.get("/auth/me", authUser, async (req, res, next) => {
 
 // Logout a user
 router.post("/auth/logout", (req, res) => {
-  const isProd = process.env.NODE_ENV === "production";
+  const isProd = process.env.NODE_ENV === "production" || process.env.RENDER === "true";
 
   res.clearCookie("accessToken", {
     httpOnly: true,
