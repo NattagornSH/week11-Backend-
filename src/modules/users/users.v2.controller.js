@@ -1,5 +1,8 @@
 import { User } from "./user.model.js";
 import bcrypt from "bcrypt";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 const userResponse = (doc) => {
   const user = doc.toObject();
@@ -164,6 +167,55 @@ export const loginUser = async (req, res, next) => {
       success: true,
       message: "เข้าสู่ระบบสำเร็จ!",
       data: userResponse(userInDB),
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const askAi = async (req, res, next) => {
+  const { question } = req.body;
+  if (!question) {
+    return res.status(400).json({ success: false, error: "Question is required" });
+  }
+
+  try {
+    const users = await User.find().select("-password");
+    
+    const prompt = `You are a helpful assistant answering questions about a list of users.
+The user is asking: "${question}"
+
+Here is the list of users:
+${JSON.stringify(users)}
+
+Please answer the user's question based on the user list provided.
+Respond ONLY with a JSON object in this exact format:
+{
+  "answer": "Your detailed answer to the question",
+  "sourceIds": ["id1", "id2"] // The _id of the users you used as sources for the answer. Use an empty array if none.
+}`;
+
+    const model = genAI.getGenerativeModel({ 
+      model: process.env.GEMINI_GENERATION_MODEL || "gemini-2.5-flash",
+      generationConfig: { responseMimeType: "application/json" }
+    });
+
+    const result = await model.generateContent(prompt);
+    let responseText = result.response.text();
+    
+    // Strip markdown formatting if Gemini returns ```json ... ```
+    responseText = responseText.replace(/^```json\s*/, "").replace(/\s*```$/, "").trim();
+    
+    const parsed = JSON.parse(responseText);
+
+    const sources = users.filter(u => parsed.sourceIds.includes(u._id.toString()));
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        answer: parsed.answer,
+        sources: sources
+      }
     });
   } catch (err) {
     next(err);

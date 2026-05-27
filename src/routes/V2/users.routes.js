@@ -8,6 +8,7 @@ import {
   deleteUser,
   createUsersHash,
   loginUser,
+  askAi,
 } from "../../modules/users/users.v2.controller.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -23,6 +24,8 @@ router.get("/", getUsers);
 router.post("/", createUser);
 
 router.post("/hash", createUsersHash); // ✅ Register with bcrypt hash
+
+router.post("/ask", authUser, askAi); // ✅ Ask AI about users
 
 // router.post("/login", loginUser); // ✅ Login route
 
