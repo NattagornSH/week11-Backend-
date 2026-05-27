@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import helmet from "helmet";
+import limiter from "./middleware/rateLimiter.js";
 
 import { users } from "./fakeData/fakeUsers.js";
 import { router as apiRoutes } from "./routes/index.js";
@@ -9,10 +11,19 @@ import { connectSupabase } from "./config/supabase.js";
 
 const app = express();
 
-app.use(cors({
-  origin: true,
-  credentials: true
-}));
+app.use(helmet());
+
+const corsOptions = {
+  origin: [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "http://localhost:5175",
+  ], // frontend domain
+  credentials: true, // allow cookies to be sent
+};
+
+app.use(cors(corsOptions));
+app.use(limiter);
 
 app.use(express.json());
 app.use(cookieParser()); // ✅ Enable cookie parsing
